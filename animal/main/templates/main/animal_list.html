@@ -1,0 +1,123 @@
+<!-- main/templates/main/animal_list.html -->
+{% extends "main/base.html" %}
+
+{% block title %}Список Животных{% endblock %}
+
+{% block content %}
+    <h1 class="text-center">Список Животных</h1>
+
+    <div class="d-flex justify-content-between mb-3">
+        <button type="button" class="btn btn-info" onclick="toggleFilters()">Фильтры</button>
+        <a href="{% url 'main:animal_list' %}" class="btn btn-secondary">Сбросить фильтры</a>
+    </div>
+
+    <div id="filters" style="display: none;" class="card card-body mb-3">
+        <form method="get" class="form-row">
+            <div class="form-group col-md-4">
+                <label for="type">Тип животного:</label>
+                <select name="type" id="type" class="form-control" onchange="filterBreeds()">
+                    <option value="">Все</option>
+                    {% for animal_type in animal_types %}
+                        <option value="{{ animal_type.id }}" {% if animal_type.id == selected_type %}selected{% endif %}>{{ animal_type.type_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label for="breed">Порода:</label>
+                <select name="breed" id="breed" class="form-control">
+                    <option value="">Все</option>
+                    {% for breed in breeds %}
+                        <option value="{{ breed.id }}" data-type="{{ breed.animal_type.id }}" {% if breed.id == selected_breed %}selected{% endif %}>{{ breed.breed_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group col-md-4">
+                <label for="name">Кличка:</label>
+                <input type="text" name="name" id="name" class="form-control" value="{{ name }}">
+            </div>
+
+            <div class="form-group col-md-4">
+                <label for="inventory_number">Инвентарный номер:</label>
+                <input type="text" name="inventory_number" id="inventory_number" class="form-control" value="{{ inventory_number }}">
+            </div>
+
+            <div class="form-group col-md-4">
+                <label for="arrival_date_from">Дата прибытия от:</label>
+                <input type="date" name="arrival_date_from" id="arrival_date_from" class="form-control" value="{{ arrival_date_from }}">
+            </div>
+
+            <div class="form-group col-md-4">
+                <label for="arrival_date_to">Дата прибытия до:</label>
+                <input type="date" name="arrival_date_to" id="arrival_date_to" class="form-control" value="{{ arrival_date_to }}">
+            </div>
+
+            <div class="form-group col-md-12">
+                <button type="submit" class="btn btn-primary mt-2">Фильтровать</button>
+            </div>
+        </form>
+    </div>
+
+    <table class="table table-striped mt-3">
+        <thead>
+            <tr>
+                <th>Инвентарный Номер</th>
+                <th>Пол</th>
+                <th>Кличка</th>
+                <th>Дата Прибытия</th>
+                <th>Возраст</th>
+                <th>Порода</th>
+                <th>Родитель</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for animal in animals %}
+                <tr>
+                    <td>{{ animal.inventory_number }}</td>
+                    <td>{{ animal.get_gender_display }}</td>
+                    <td>{{ animal.nickname }}</td>
+                    <td>{{ animal.arrival_date }}</td>
+                    <td>{{ animal.age }}</td> <!-- Отображаем возраст -->
+                    <td>{{ animal.breed.breed_name }}</td>
+                    <td>
+                        {% if animal.parent_animal %}
+                            {{ animal.parent_animal.nickname }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function toggleFilters() {
+            var filters = document.getElementById('filters');
+            if (filters.style.display === 'none') {
+                filters.style.display = 'block';
+            } else {
+                filters.style.display = 'none';
+            }
+        }
+
+        function filterBreeds() {
+            var selectedType = document.getElementById('type').value;
+            var breedOptions = document.getElementById('breed').options;
+
+            for (var i = 0; i < breedOptions.length; i++) {
+                var option = breedOptions[i];
+                if (option.value === "" || option.getAttribute('data-type') === selectedType) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            filterBreeds();
+        });
+    </script>
+{% endblock content %}

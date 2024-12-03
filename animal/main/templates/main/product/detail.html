@@ -1,0 +1,23 @@
+{% extends "main/base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ animal.nickname or 'Animal Details' }}
+{% endblock title %}
+
+{% block content %}
+    <div class="detail-animal">
+        <div class="detail-img">
+            <img src="{% if animal.image %}{{ animal.image.url }}{% else %}{% static 'img/default-animal.jpg' %}{% endif %}" alt="Animal Image" class="detail-image">
+        </div>
+        <div class="detail-info">
+            <h2>{{ animal.nickname or "No Nickname" }}</h2>
+            <p><strong>Inventory Number:</strong> {{ animal.inventory_number }}</p>
+            <p><strong>Breed:</strong> {{ animal.breed.breed_name }}</p>
+            <p><strong>Type:</strong> {{ animal.breed.animal_type.type_name }}</p>
+            <p><strong>Gender:</strong> {{ animal.get_gender_display }}</p>
+            <p><strong>Arrival Date:</strong> {{ animal.arrival_date }}</p>
+            <p><strong>Age (Months):</strong> {{ animal.arrival_age_months }}</p>
+        </div>
+    </div>
+{% endblock content %}

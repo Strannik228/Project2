@@ -1,0 +1,17 @@
+<!-- main/templates/main/add_weighting.html -->
+{% extends "main/base.html" %}
+
+{% block title %}Добавить данные взвешивания{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="text-center my-4">Добавить данные взвешивания</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <div class="d-flex justify-content-end">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
